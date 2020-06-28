@@ -1,0 +1,296 @@
+MyBatis : 持久层框架，支持定制化 SQL、存储过程以及高级映射
+          半自动化 ORM（Object Relationship Mapping）框架
+          使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs 映射成数据库中的记录
+          POJOs : Plain Ordinary Java Object, 普通的 JavaBeans 类对象
+
+POJO（Plain Ordinary Java Object）：简单的 JavaBean 类对象
+DTO（Data Transfer Object）：数据传输对象，单纯用来数据传输的对象
+PO（Persistent Object）：持久对象，可以看成是与数据库中的表相映射的 Java  对象，一个Entity 或者说 ModelEntity
+BO（Business Object）：业务对象，和业务挂钩的，简单来说，每个业务可能需要很多 PO（数据库表）来组成
+VO（Value Object）：值对象，更简单，就是一个传输对象
+DAO（Data Access Object）：数据访问对象
+
+关系型数据库的第三范式或 BCNF 范式
+
+JDBC 类型：
+BIT      FLOAT    CHAR         TIMESTAMP      OTHER    UNDEFINED
+TINYINT  REAL     VARCHAR      BINARY         BLOB     NVARCHAR
+SMALLINT DOUBLE   LONGVARCHAR  VARBINARY      CLOB     NCHAR
+INTEGER  NUMERIC  DATE         LONGVARBINARY  BOOLEAN  NCLOB
+BIGINT   DECIMAL  TIME         NULL           CURSOR   ARRAY
+
+javaType:Java 类型内建的类型别名，不区分大小写的
+别名       映射的类型
+_byte      byte
+_long      long
+_short     short
+_int       int
+_integer   int
+_double    double
+_float     float
+_boolean   boolean
+string     String
+byte       Byte
+long       Long
+short      Short
+int        Integer
+integer    Integer
+double     Double
+float      Float
+boolean    Boolean
+date       Date
+decimal    BigDecimal
+bigdecimal BigDecimal
+object     Object
+map        Map
+hashmap    HashMap
+list       List
+arraylist  ArrayList
+collection Collection
+iterator   Iterator
+
+注：todo Mybatis/Ibatis框架不支持Java中的 char 基本数据类型，
+   Java中的 String类型可以通过 Mybatis/Ibatis框架，进行兼容数据库中的 CHAR、VARCHAR 这2种数据类型
+
+
+映射器 .xml 文件中标签（元素）cache-ref：缓存引用，引用另一个缓存
+    <!ELEMENT cache-ref EMPTY>
+    <!ATTLIST cache-ref
+    namespace CDATA #REQUIRED
+    >
+    如：<cache-ref namespace="com.someone.application.data.SomeMapper"/>
+
+
+映射器 .xml 文件中标签（元素）cache：缓存
+    默认情况下，只启用了本地的会话缓存，仅仅对一个会话中的数据进行缓存
+    若要启用全局的二级缓存，只需要在映射文件中添加一行：<cache/>，此时：
+        1、映射语句文件中的所有 select 语句的结果将会被缓存。
+        2、映射语句文件中的所有 insert、update 和 delete 语句会刷新缓存。
+        3、缓存会使用最近最少使用算法(LRU, Least Recently Used)算法来清除不需要的缓存
+        4、缓存不会定时进行刷新(也就是说，没有刷新间隔)。
+        5、缓存会保存列表或对象(无论查询方法返回哪种)的 1024 个引用。
+        6、缓存会被视为读/写缓存，这意味着获取到的对象并不是共享的，可以安全地被调用者修改，而不干扰其他调用者或线程所做的潜在修改
+        注：缓存只作用于 cache 标签所在的映射文件中的语句。如果混合使用 Java API 和 XML 映射文件，在共用接口中的语句将不会被默认缓存。
+           此时需要使用 @CacheNamespaceRef 注解指定缓存作用域
+    <!ELEMENT cache (property*)>
+    <!ATTLIST cache
+    type CDATA #IMPLIED   // 可以指向自定义缓存实现类，或第三方缓存实现方案类
+                          // 该类需要实现 org.apache.ibatis.cache.Cache 接口
+    eviction CDATA #IMPLIED  //配置缓存：可选：LRU – 最近最少使用:移除最长时间不被使用的对象，默认
+                                             FIFO – 先进先出:按对象进入缓存的顺序来移除它们
+                                             SOFT – 软引用:基于垃圾回收器状态和软引用规则移除对象
+                                             WEAK – 弱引用:更积极地基于垃圾收集器状态和弱引用规则移除对象
+    flushInterval CDATA #IMPLIED  //每隔多少毫秒刷新
+    size CDATA #IMPLIED  //最多可以存储结果对象或 列表
+    readOnly CDATA #IMPLIED  //返回的对象被认为是只否读的
+    blocking CDATA #IMPLIED
+    >
+
+
+问题一：如果数据库中某个 表 的列名与相对应的 JavaBean 类的成员属性名不一致
+  解一：在进行 sql 语句编写时，设置指定类型别名，使该别名与相对应的 JavaBean 类的成员属性名一致
+       如：<select id="selectOne" resultType="com.mybatis.project.bean.Student">
+              SELECT id, username, pwd [AS ]password FROM student WHERE id = #{id};
+          </select>
+  解二：设置结果映射类型
+       如：<select id="selectOne" resultMap="StudentMap">
+               SELECT id, username, pwd [AS ]password FROM student WHERE id = #{id};
+           </select>
+           <resultMap type="com.mybatis.project.bean.Student" id="StudentMap">
+               <id column="id" property="id"/>    // id 是 表 中的主键
+               <result column="name" property="name"/>  // column 对应 表 中列名，property 对应 JavaBean 类的成员属性名
+               <result column="pwd" property="password"/>
+           </resultMap>
+
+
+映射器 .xml 文件中标签（元素）resultMap：
+    属性：<!ATTLIST resultMap
+           id CDATA #REQUIRED     //当前命名空间中的一个唯一标识，用于标识一个结果映射
+           type CDATA #REQUIRED   //类的完全限定名, 或者一个类型别名（类型别名在 mybatis-config.xml 中设置）
+           extends CDATA #IMPLIED
+           autoMapping (true|false) #IMPLIED //MyBatis 将会为本结果映射开启或关闭自动映射，默认值:未设置(unset)
+                                            该属性会覆盖全局的属性 autoMappingBehavior
+         >
+    子标签：<!ELEMENT resultMap (constructor?,id*,result*,association*,collection*, discriminator?)>
+        id：<!ELEMENT id EMPTY>  // 将表中的某一列的值映射到对应 JavaBean 类的成员属性（简单数据类型修饰）上，id 元素对应的属性会被标记为对象的标识符
+        result：<!ELEMENT result EMPTY> // 将表中的某一列的值映射到对应 JavaBean 类的成员属性（简单数据类型修饰）上
+            <!ATTLIST id|result
+            property CDATA #IMPLIED   // 对应 JavaBean 类的成员属性（简单数据类型修饰）
+            javaType CDATA #IMPLIED   // 对应 JavaBean 类的成员属性类型（一个 Java 类的全限定名，或一个类型别名）
+            column CDATA #IMPLIED     // 数据库表中的列名，或者是列的别名
+            jdbcType CDATA #IMPLIED   // 数据库表中的列的 JDBC 类型
+            typeHandler CDATA #IMPLIED //类型处理器，该属性值是一个类型处理器实现类的全限定名，或 者是类型别名
+            >
+        constructor：<!ELEMENT constructor (idArg*,arg*)>  //通过构造方法进行注入
+            idArg：<!ELEMENT idArg EMPTY> // ID 参数，对象的标识符
+            arg：<!ELEMENT arg EMPTY>  // 其他普通参数
+                <!ATTLIST idArg|arg
+                javaType CDATA #IMPLIED  //构造函数参数类型，可以是 Java 类的完全限定名，或一个类型别名
+                column CDATA #IMPLIED    //数据库表中的列名，或者是列的别名
+                jdbcType CDATA #IMPLIED   //数据库表中的列的 JDBC 类型
+                typeHandler CDATA #IMPLIED ////类型处理器，该属性值是一个类型处理器实现类的全限定名，或 者是类型别名
+                select CDATA #IMPLIED  //用于加载复杂类型属性的映射 sql 语句的 ID，会从 column 属性中指定的列检索数据，作为参数传递给该 select 语句
+                resultMap CDATA #IMPLIED //结果映射的 ID，可以将嵌套的结果集映射到一个合适的对象树中
+                name CDATA #IMPLIED   // 构造方法形参的名字。从 3.4.3 版本开始，通过指定具体的参数名，可以以任意顺序写入 arg 元素
+                columnPrefix CDATA #IMPLIED
+                >
+        association：<!ELEMENT association (constructor?,id*,result*,association*,collection*, discriminator?)>
+             //关联标签，相当于 Java 类的关联
+             <!ATTLIST association
+             property CDATA #REQUIRED
+             column CDATA #IMPLIED
+             javaType CDATA #IMPLIED
+             jdbcType CDATA #IMPLIED
+             select CDATA #IMPLIED    // 用于加载复杂类型属性的映射 sql 语句的 ID，嵌套 Select 查询:通过执行另外一个 SQL 映射语句来加载期望的复杂类型
+             resultMap CDATA #IMPLIED // 嵌套结果映射:使用嵌套的结果映射来处理连接结果的重复子集
+             typeHandler CDATA #IMPLIED
+             notNullColumn CDATA #IMPLIED  //默认情况下，在至少一个被映射到属性的列不为空时，子对象才会被创建，默认值:未设置(unset)
+                                           //在指定后非空列后，Mybatis 将只在这些列非空时才创建一个子对象。可以使用逗号分隔来指定多个列。
+             columnPrefix CDATA #IMPLIED  //指定 columnPrefix 列名前缀允许将带有这些前缀的列映射到一个外部的结果映射中
+                                          // 一般用来，早引用相同 resultMap 时，后一个设置该属性，以作区别
+             resultSet CDATA #IMPLIED   //指定用于加载复杂类型的结果集名字
+             foreignColumn CDATA #IMPLIED  //指定外键对应的列名
+             autoMapping (true|false) #IMPLIED  //注意，本属性对外部的结果映射无 效，所以不能搭配 select 或 resultMap 元素使用
+             fetchType (lazy|eager) #IMPLIED  //指定属性后，将在映射中忽略全局配置参数 lazyLoadingEnabled，而使用该属性的值
+             >
+        collection：<!ELEMENT collection (constructor?,id*,result*,association*,collection*, discriminator?)>
+            //集合，相当于 Java 类中的关联的类的集合
+            <!ATTLIST collection
+            property CDATA #REQUIRED
+            column CDATA #IMPLIED
+            javaType CDATA #IMPLIED
+            ofType CDATA #IMPLIED  //集合存储的类型，用来将 JavaBean(或字段)属性的类型和集合存储的类型区分开来
+            jdbcType CDATA #IMPLIED
+            select CDATA #IMPLIED
+            resultMap CDATA #IMPLIED
+            typeHandler CDATA #IMPLIED
+            notNullColumn CDATA #IMPLIED
+            columnPrefix CDATA #IMPLIED
+            resultSet CDATA #IMPLIED
+            foreignColumn CDATA #IMPLIED
+            autoMapping (true|false) #IMPLIED
+            fetchType (lazy|eager) #IMPLIED
+            >
+        discriminator：<!ELEMENT discriminator (case+)>  //鉴别器，像 Java 语言中的 switch 语句
+            属性：<!ATTLIST discriminator
+                 column CDATA #IMPLIED   //column 指定了 MyBatis 查 询被比较值的地方
+                 javaType CDATA #REQUIRED  //用来确保使用正确的相等测试
+                 jdbcType CDATA #IMPLIED
+                 typeHandler CDATA #IMPLIED
+                 >
+            子标签：<!ELEMENT case (constructor?,id*,result*,association*,collection*, discriminator?)>
+                   <!ATTLIST case
+                   value CDATA #REQUIRED
+                   resultMap CDATA #IMPLIED
+                   resultType CDATA #IMPLIED
+                   >
+
+
+映射器文件中，动态 sql：根据不同条件设置 sql 语句
+标签（元素）：if：<!ELEMENT if (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                    <!ATTLIST if
+                    test CDATA #REQUIRED
+                    >       // todo test 判断语句中的属性是传递的参数，而不是表中的列名
+                如：<select id="findActiveBlogLike" resultType="Blog">
+                        SELECT * FROM BLOG WHERE state = ‘ACTIVE’
+                        <if test="title != null">   //根据两个条件查询
+                            AND title like #{title}
+                        </if>
+                        <if test="author != null and author.name != null">
+                            AND author_name like CONCAT('%', #{author.name}, '%')  //模糊查询，% 可匹配0～N个字符
+                        </if>
+                   </select>
+            choose：<!ELEMENT choose (when* , otherwise?)>
+                    <!ELEMENT when (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                        <!ATTLIST when
+                        test CDATA #REQUIRED
+                        >
+                   <!ELEMENT otherwise (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                   如：<select id="findActiveBlogLike" resultType="Blog">
+                          SELECT * FROM BLOG WHERE state = ‘ACTIVE’
+                          <choose>
+                              <when test="title != null">
+                                  AND title like #{title}
+                              </when>
+                              <when test="author != null and author.name != null">
+                                  AND author_name like #{author.name}
+                              </when>
+                              <otherwise>
+                                  AND featured = 1
+                              </otherwise>
+                          </choose>
+                      </select>
+            where：<!ELEMENT where (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                   todo where 元素只会在子元素返回有非空内容的情况下才插入 “WHERE” 子句，若子句的开头为 “AND” 或 “OR”，where 元素会将它们去除
+                  如：<select id="findActiveBlogLike" resultType="Blog">
+                         SELECT * FROM BLOG
+                         <where>
+                             <if test="state != null">
+                                 state = #{state}
+                             </if>
+                             <if test="title != null">
+                                 AND title like #{title}
+                             </if>
+                             <if test="author != null and author.name != null">
+                                 AND author_name like #{author.name}
+                             </if>
+                         </where>
+                    </select>
+            trim：<!ELEMENT trim (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                     <!ATTLIST trim
+                     prefix CDATA #IMPLIED
+                     prefixOverrides CDATA #IMPLIED
+                     suffix CDATA #IMPLIED
+                     suffixOverrides CDATA #IMPLIED
+                     >
+                 可以通过自定义 trim 元素来定制 where 元素 或 SET 元素的功能，比如，
+                     和 where 元素等价的自定义 trim 元素为:
+                         <trim prefix="WHERE" prefixOverrides="AND |OR ">  // todo 此处的空格是必要的
+                             ...
+                         </trim>
+                     与 set 元素等价的自定义 trim 元素：
+                         <trim prefix="SET" suffixOverrides=",">
+                             ...
+                         </trim>
+            set：<!ELEMENT set (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                 用于动态更新语句，set 元素可以用于动态包含需要更新的列，忽略其它不更新的列
+                 todo set 元素会动态地在行首插入 SET 关键字，并会删掉额外的逗号
+                 如：<update id="updateAuthorIfNecessary">
+                        UPDATE Author
+                        <set>
+                            <if test="username != null">username = #{username},</if>
+                            <if test="password != null">password = #{password},</if>
+                            <if test="email != null">email = #{email},</if>
+                            <if test="bio != null">bio = #{bio}</if>
+                        </set>
+                        where id=#{id}
+                    </update>
+            foreach：<!ELEMENT foreach (#PCDATA | include | trim | where | set | foreach | choose | if | bind)*>
+                     将任何可迭代对象(如 List、Set 等)、Map 对象或者数组对象作为集合参数传递给 foreach
+                        <!ATTLIST foreach
+                        collection CDATA #REQUIRED   // 集合参数的类型
+                        item CDATA #IMPLIED     // 当使用可迭代对象或者数组时，index 是当前迭代的序号，item 是本次迭代获取到的元素；
+                                                // 当使用 Map 对象(或者 Map.Entry 对象的集合)时，index 是键，item 是值
+                        index CDATA #IMPLIED    // 当使用可迭代对象或者数组时，index 是当前迭代的序号，item 是本次迭代获取到的元素；
+                                                // 当使用 Map 对象(或者 Map.Entry 对象的集合)时，index 是键，item 是值
+                        open CDATA #IMPLIED   // 指定开头与结尾的字符串
+                        close CDATA #IMPLIED  // 指定开头与结尾的字符串
+                        separator CDATA #IMPLIED // 集合项迭代之间的分隔符
+                        >
+                    foreach 用于对集合进行遍历(尤其是在构建 IN 条件语句时候)，如：
+                        <select id="selectPostIn" resultType="domain.blog.Post">
+                            SELECT *
+                            FROM POST P
+                            WHERE ID in
+                            <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+                                #{item}
+                            </foreach>
+                        </select>
+
+
+
+
+
+
+
+

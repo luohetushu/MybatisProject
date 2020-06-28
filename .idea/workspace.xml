@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ed4aae90-9bbe-445c-8d3d-b4e6f428705f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ccKoPNeK99jbYYyS186eomQzML" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.mybatis.project.test.Test" />
+      <module name="MybatisProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.mybatis.project.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SshConsoleOptionsProvider">
+    <option name="myEncoding" value="UTF-8" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ed4aae90-9bbe-445c-8d3d-b4e6f428705f" name="Default Changelist" comment="" />
+      <created>1590822615692</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590822615692</updated>
+      <workItem from="1590822619408" duration="8902000" />
+      <workItem from="1590901573850" duration="29767000" />
+      <workItem from="1591077610424" duration="17417000" />
+      <workItem from="1592127098707" duration="12204000" />
+      <workItem from="1592889454209" duration="1358000" />
+      <workItem from="1593338225725" duration="391000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="533" y="152" key="#com.intellij.ide.util.MemberChooser" timestamp="1590912662431">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="533" y="152" key="#com.intellij.ide.util.MemberChooser/0.23.1440.877@0.23.1440.877" timestamp="1590912662431" />
+    <state x="458" y="223" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog" timestamp="1590822838041">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="458" y="223" key="#com.intellij.util.ui.classpath.ChooseLibrariesDialog/0.23.1440.877@0.23.1440.877" timestamp="1590822838041" />
+    <state width="1398" height="253" key="GridCell.Tab.0.bottom" timestamp="1592318356453">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="253" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1592318356453" />
+    <state width="1398" height="253" key="GridCell.Tab.0.center" timestamp="1592318356452">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="253" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1592318356452" />
+    <state width="1398" height="253" key="GridCell.Tab.0.left" timestamp="1592318356452">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="253" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1592318356452" />
+    <state width="1398" height="253" key="GridCell.Tab.0.right" timestamp="1592318356453">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="253" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1592318356453" />
+    <state x="208" y="43" key="SettingsEditor" timestamp="1590822840826">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="208" y="43" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1590822840826" />
+  </component>
+</project>

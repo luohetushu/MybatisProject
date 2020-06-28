@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--映射器文件，通过配置实现-->
+<mapper namespace="com.mybatis.project.mapper.StudentMapper">
+
+    <!--
+        子标签（元素）：
+        cache-ref：引用其它命名空间的缓存配置
+        cache：该命名空间的缓存配置
+        resultMap：描述如何从数据库结果集中加载对象，是最复杂也是最强大的元素
+        parameterMap：老式风格的参数映射。此元素已被废弃，并可能在将来被移除！请使用行内参数映射
+        sql – 可被其它语句引用的可重用语句块。
+        insert – 映射插入语句  INSERT INTO 表名(参数1, 参数2, 参数3, ...) values('实参1', '实参2', '实参3', ...)
+        update – 映射更新语句  UPDATE 表名 SET 列名1=列值1, 列名2=列值2, 列名3=列值3, ... [WHERE 条件];
+        delete – 映射删除语句  表中删除数据：DELETE FROM 表名[ WHERE 条件];  //若果不带条件，则删除表中所有数据
+        select – 映射查询语句  SELECT * FROM 表名[ WHERE 条件];
+    -->
+
+    <!--
+        select：映射查询语句  SELECT * FROM 表名[ WHERE 条件];
+        相关属性：id：在命名空间中唯一的标识符，可以被用来引用这条语句  //必须
+                parameterType：为该语句传入的参数的类全限定名或别名  //可选 MyBatis 可通过类型处理器(TypeHandler)推断出具体传入语句的参数，
+                               默认值为未设置(unset)
+                parameterMap：用于引用外部 parameterMap 的属性，todo 已被废弃 可使用行内参数映射和 parameterType 属性
+                resultType：为该语句返回的结果的类全限定名或别名，todo 如果返回的是集合，应该设置为集合包含的类型，而不是集合本身的类型
+                resultMap：对外部 resultMap 的命名引用 todo resultType 和 resultMap 之间只能使用一个
+                flushCache：将其设置为 true 后，只要语句被调用，都会导致本地缓存和二 级缓存被清空，默认值:false
+                useCache：若为 true，则将该语句调用后的结果被 二级缓存 缓存，默认值:对 select 元素为 true
+                timeout：表示在抛出异常之前，驱动程序等待数据库返回请求结果的秒数。默认值为未设置(unset)(依赖数据库驱动)
+                fetchSize：一个给驱动的建议值，尝试让驱动程序每次批量返回的结果行数等于这个设置值。 默认值为未设置(unset)(依赖驱动)
+                statementType：可选 STATEMENT | PREPARED | CALLABLE，默认值:PREPARED
+                               MyBatis 处理类型，分别对应 Statement | PreparedStatement | CallableStatement
+                resultSetType：FORWARD_ONLY | SCROLL_SENSITIVE | SCROLL_INSENSITIVE | DEFAULT(等价于 unset)，默认值为 unset (依赖数据库驱动)
+                databaseId：如果配置了数据库厂商标识(databaseIdProvider)， MyBatis 会加载所有不带 databaseId 或匹配当前 databaseId 的语句;
+                            如果带和不带的语句都有，则不带的会被忽略
+                resultOrdered：该设置仅针对嵌套结果 select 语句:  默认值:false
+                               若为 true，将会假设包含了 嵌套结果集 或 分组，
+                               当返回一个主结果行时，就不会产生对前面结果集的引用，使得在获取嵌套结果集的时候不至于内存不够用
+                resultSets：该设置仅适用于多结果集的情况。将会列出语句执行后返回的结果集并赋予每个结果集一个名称，多个名称之间以逗号分隔
+    -->
+
+    <!--查询所有-->
+    <select id="selectStudentAll" resultType="Student">
+        SELECT * FROM student
+    </select>
+
+    <!--查询一条语句-->
+    <select id="selectStudentById1" parameterType="int" resultType="com.mybatis.project.bean.Student">
+        SELECT * FROM student WHERE id = #{id}
+    </select>
+
+    <!--mysql 数据库分页查询-->
+    <select id="selectStudentPage" parameterType="hashMap" resultType="Student">
+        SELECT * FROM student LIMIT #{startIndex, javaType=int}, #{pageSize, javaType=int}
+    </select>
+
+
+    <!--
+        insert\update\delete 相关属性：
+        id：在命名空间中唯一的标识符，可以被用来引用这条语句  //必须
+        parameterType：为该语句传入的参数的类全限定名或别名  //可选 MyBatis 可通过类型处理器(TypeHandler)推断出具体传入语句的参数，
+                       默认值为未设置(unset)
+        parameterMap：用于引用外部 parameterMap 的属性，todo 已被废弃 可使用行内参数映射和 parameterType 属性
+        flushCache：将其设置为 true 后，只要语句被调用，都会导致本地缓存和二 级缓存被清空，默认值:false
+        timeout：表示在抛出异常之前，驱动程序等待数据库返回请求结果的秒数。默认值为未设置(unset)(依赖数据库驱动)
+        statementType：可选 STATEMENT | PREPARED | CALLABLE，默认值:PREPARED
+                       MyBatis 处理类型，分别对应 Statement | PreparedStatement | CallableStatement
+        databaseId：如果配置了数据库厂商标识(databaseIdProvider)， MyBatis 会加载所有不带 databaseId 或匹配当前 databaseId 的语句;
+                    如果带和不带的语句都有，则不带的会被忽略
+        useGeneratedKeys：(仅适用于 insert 和 update)会令 MyBatis 使用 JDBC 的 getGeneratedKeys 方法来取出由数据库内部生成的主键，默认值:false
+        keyProperty：(仅适用于 insert 和 update)指定能够唯一识别对象的属性，
+                     MyBatis 会使用 getGeneratedKeys 的返回值或 insert 语句的 selectKey 子元素设置它的值，默认值:未设置(unset)
+                     如果生成列不止一个，可以用逗号分隔多个属性名称
+        keyColumn：(仅适用于 insert 和 update)设置生成键值在表中的列名，在某些数据库(像 PostgreSQL)中，当主键列不是表中的第一列的时候，是必须设置的
+                   如果生成列不止一个，可以用逗号分隔多个属性名称
+    -->
+    <!--
+        inset\update 子标签（元素）：
+        selectKey：一般用于不支持自动生成主键列的数据库和可能不支持自动生成主键的 JDBC 驱动，用来生成主键
+            相关属性：keyProperty：selectKey 语句结果应该被设置到的目标属性（主键名）。如果生成列不止一个，可以用逗号分隔多个属性名称。
+                     keyColumn：返回结果集中生成列属性的列名。如果生成列不止一个，可以用逗号分隔多个属性名称。
+                     resultType：结果的类型。MyBatis 允许将任何简单类型用作主键的类型，包括字符串。
+                                 如果生成列不止一个，则可以使用包含期望属性的 Object 或 Map。
+                     order：BEFORE | AFTER。
+                           如果设置为 BEFORE，那么首先会生成主键，设置 keyProperty，再执行插入语句
+                           如果设置为 AFTER，那么先执行插入语句，再是 selectKey 中的语句
+                     statementType：可选 STATEMENT | PREPARED | CALLABLE，默认值:PREPARED
+                                    MyBatis 处理类型，分别对应 Statement | PreparedStatement | CallableStatement
+    -->
+    <!--插入一条数据-->
+    <insert id="addStudent" useGeneratedKeys="true" parameterType="com.mybatis.project.bean.Student" keyProperty="id">
+        INSERT INTO student(name, sex, age, birthday, salary)
+        VALUES(#{name}, #{sex}, #{age}, #{birthday}, #{salary})
+    </insert>
+    <!--多条插入,如果数据库支持多条插入-->
+    <insert id="addSomeStudent" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student(name, sex, age, birthday, salary) VALUES
+        <foreach item="item" collection="list" separator=",">
+            (#{name}, #{sex}, #{age}, #{birthday}, #{salary})
+        </foreach>
+    </insert>
+    <!--更新一则数据-->
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student SET
+        name = #{name,javaType=java.lang.String,jdbcType=VARCHAR},
+        sex = #{sex},
+        age = #{age},
+        birthday = #{birthday},
+        salary = #{salary}
+        WHERE id = #{id}
+    </update>
+    <!--删除-->
+    <delete id="deleteStudent" parameterType="int">
+        DELETE FROM student WHERE id = #{id}
+    </delete>
+
+    <!--指定参数特殊类型：比如：#{property,javaType=int,jdbcType=NUMERIC,typeHandler=MyTypeHandler,numericScale=2} todo 不能换行
+        property：参数名
+        javaType：
+        jdbcType：JDBC 类型
+        typeHandler：自定义类型处理器
+        numericScale：指定小数点后保留的位数
+    -->
+
+
+</mapper>
